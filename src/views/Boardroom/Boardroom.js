@@ -1,13 +1,13 @@
 import React, {useMemo} from 'react';
 import {useWallet} from 'use-wallet';
 import moment from 'moment';
-import styled from 'styled-components';
+import styled, {createGlobalStyle} from 'styled-components';
 import Spacer from '../../components/Spacer';
 import Harvest from './components/Harvest';
 import Stake from './components/Stake';
 import {makeStyles} from '@material-ui/core/styles';
 
-import {Box, Card, CardContent, Button, Typography, Grid} from '@material-ui/core';
+import {Box, Button, Card, CardContent, Grid, Typography} from '@material-ui/core';
 
 import {Alert} from '@material-ui/lab';
 
@@ -26,7 +26,6 @@ import useTotalStakedOnBoardroom from '../../hooks/useTotalStakedOnBoardroom';
 import useClaimRewardCheck from '../../hooks/boardroom/useClaimRewardCheck';
 import useWithdrawCheck from '../../hooks/boardroom/useWithdrawCheck';
 import ProgressCountdown from './components/ProgressCountdown';
-import {createGlobalStyle} from 'styled-components';
 import {Helmet} from 'react-helmet';
 
 import HomeImage from '../../assets/img/background.jpg';
