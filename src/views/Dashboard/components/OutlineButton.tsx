@@ -14,7 +14,7 @@ const OutlineButton = (props: { icon: string; title: React.ReactNode; }) => (
 );
 
 const StyledOutLineBtn = styled.div`
-    font-size: 12px;
+  font-size: 14px;
 `;
 
 const StyledImg = styled.div`

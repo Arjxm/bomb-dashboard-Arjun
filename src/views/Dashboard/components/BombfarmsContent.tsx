@@ -71,6 +71,7 @@ const Tag = styled.div`
 `
 
 const StyledContentWrapper = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: end;

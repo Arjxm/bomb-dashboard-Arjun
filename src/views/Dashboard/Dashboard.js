@@ -1,15 +1,25 @@
 import React, {useEffect, useMemo, useRef} from 'react';
+import moment from "moment/moment";
 import Page from "../../components/Page";
-import styled, {createGlobalStyle} from "styled-components";
+
 import {Helmet} from "react-helmet";
-
+import {Link} from "react-router-dom";
+import BombfarmsContent from "./components/BombfarmsContent";
+import useTotalValueLocked from "../../hooks/useTotalValueLocked";
+import useCurrentEpoch from "../../hooks/useCurrentEpoch";
+import useTreasuryAllocationTimes from "../../hooks/useTreasuryAllocationTimes";
+import ProgressCountdown from "../Boardroom/components/ProgressCountdown";
+import useCashPriceInEstimatedTWAP from "../../hooks/useCashPriceInEstimatedTWAP";
 import CardContainer from "./components/CardContainer";
-
+import useBombStats from "../../hooks/useBombStats";
+import usebShareStats from "../../hooks/usebShareStats";
+import useBondStats from "../../hooks/useBondStats";
+import useBombFinance from "../../hooks/useBombFinance";
 //Background image
 import DashImage from '../../assets/img/dash-background.svg';
 
 //Style
-
+import styled, {createGlobalStyle} from "styled-components";
 import {
     Avatar,
     Box,
@@ -27,14 +37,11 @@ import OutlineButton from "./components/OutlineButton";
 //Icons
 import bomb from '../../assets/img/bbond-256.png';
 import bombIcon from '../../assets/img/bomb-icon.png';
-import {Link} from "react-router-dom";
-import BombfarmsContent from "./components/BombfarmsContent";
-import useTotalValueLocked from "../../hooks/useTotalValueLocked";
-import useCurrentEpoch from "../../hooks/useCurrentEpoch";
-import useTreasuryAllocationTimes from "../../hooks/useTreasuryAllocationTimes";
-import ProgressCountdown from "../Boardroom/components/ProgressCountdown";
-import moment from "moment/moment";
-import useCashPriceInEstimatedTWAP from "../../hooks/useCashPriceInEstimatedTWAP";
+import discordIcon from '../../assets/img/discordIcon.png';
+import readDocsIcon from '../../assets/img/ReadDoc.png';
+import bombBitcoin from "../../assets/img/bomb-bitcoin-LP.png";
+import upIcon from "../../assets/img/Icon-arrow-up-circle.png";
+import downIcon from "../../assets/img/Icon-arrow-down-circle.png";
 
 
 const BackgroundImage = createGlobalStyle`
@@ -61,9 +68,31 @@ const Dashboard = () => {
     const scalingFactor = useMemo(() => (cashStat ? Number(cashStat.priceInDollars).toFixed(4) : null), [cashStat]);
     const {to} = useTreasuryAllocationTimes();
 
-
     const lasttwap = scalingFactor;
 
+    const bombStats = useBombStats();
+    const bShareStats = usebShareStats();
+    const tBondStats = useBondStats();
+    const bombFinance = useBombFinance();
+
+
+    const bombPriceInBNB = useMemo(() => (bombStats ? Number(bombStats.tokenInFtm).toFixed(4) : null), [bombStats]);
+    const bombPriceInDollars = useMemo(
+        () => (bombStats ? Number(bombStats.priceInDollars).toFixed(2) : null),
+        [bombStats],
+    );
+    const bombCirculatingSupply = useMemo(() => (bombStats ? String(bombStats.circulatingSupply) : null), [bombStats]);
+    const bombTotalSupply = useMemo(() => (bombStats ? String(bombStats.totalSupply) : null), [bombStats]);
+    const bombFinanceSummaryTable = [
+        {
+            name: "$BOMB",
+            current: bombCirculatingSupply,
+            total: bombTotalSupply,
+            price: `$ ${bombPriceInDollars}${bombPriceInBNB}BTC`
+        },
+        {name: "$BSHARE", current: "5656", total: "32", price: '32'},
+        {name: "$BBOND", current: "5656", total: "32", price: '32'},
+    ]
 
     return (
         <>
@@ -83,6 +112,24 @@ const Dashboard = () => {
 
                                 <Grid container spacing={2}>
                                     <Grid item xs={10}>
+                                        <table style={{width: '50%', height: '100%'}}>
+                                            <tr>
+                                                <th></th>
+                                                <th><small>Current supply</small></th>
+                                                <th><small>Total supply</small></th>
+                                                <th><small>Price</small></th>
+                                            </tr>
+
+                                            {bombFinanceSummaryTable.map(data => (
+                                                <tr style={{textAlign: 'center'}}>
+                                                    <td>{data.name}</td>
+                                                    <td>{data.current}</td>
+                                                    <td>{data.total}</td>
+                                                    <td>{data.price}</td>
+                                                </tr>
+                                            ))}
+
+                                        </table>
                                     </Grid>
                                     <Grid item xs={2}>
                                         <div style={{alignItems: 'end', textAlign: 'center', marginTop: '4px'}}>
@@ -125,31 +172,92 @@ const Dashboard = () => {
                             <StyledDashInvestNowBtn>
                                 <Typography>Invest Now</Typography>
                             </StyledDashInvestNowBtn>
-                            <Grid container spacing={2}>
+                            <Grid container spacing={2} style={{marginBottom: '4px'}}>
                                 <Grid item xs={6}>
-                                    <Button variant="contained" style={{
-                                        width: '100%',
-                                        background: 'rgba(255, 255, 255, 0.5)',
-                                        border: '1px solid #728CDF'
-                                    }}>
-                                        Delete
-                                    </Button>
+                                    <StyledCustomBtn>
+                                        <img style={{background: '#ffffff', borderRadius: '62px', marginRight: '12px'}}
+                                             src={discordIcon}/>
+                                        <Typography>Chat on Discord</Typography>
+                                    </StyledCustomBtn>
 
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <Button variant="contained" style={{
-                                        width: '100%',
-                                        background: 'rgba(255, 255, 255, 0.5)',
-                                        border: '1px solid #728CDF'
-                                    }}>
-                                        Delete
-                                    </Button>
+                                    <StyledCustomBtn>
+                                        <img style={{
+                                            background: '#ffffff',
+                                            borderRadius: '62px',
+                                            marginRight: '12px',
+                                            padding: '3px'
+                                        }} src={readDocsIcon}/>
+                                        <Typography>Read Docs</Typography>
+                                    </StyledCustomBtn>
                                 </Grid>
                             </Grid>
                             {/*Boardroom Button, Link*/}
                             {/*Boardroom*/}
                             <CardContainer>
+                                <StyledWrapper>
+                                    <StyledWrapper>
+                                        <img src={bombBitcoin} style={{width: '32px'}}/>
+                                        <Typography
+                                            style={{marginLeft: '6px', marginRight: '6px'}}>BOMB-BTCB </Typography>
+                                        <Tag>
+                                            <Typography style={{
+                                                fontSize: '12px',
+                                                fontWeight: 'bolder'
+                                            }}>Recommended</Typography>
+                                        </Tag>
+                                    </StyledWrapper>
 
+                                    <Typography>TVL:gsjhdgsjhgdjhsga</Typography>
+                                </StyledWrapper>
+                                <div style={{
+                                    height: '0.5px',
+                                    width: '95%',
+                                    marginLeft: '32px',
+                                    background: 'rgba(195, 197, 203, 0.75)'
+                                }}></div>
+                                <div style={{
+                                    textAlign: 'end',
+                                    display: 'flex',
+                                    justifyContent: 'end',
+                                    alignItems: 'center'
+                                }}>
+                                    <small>Total Stacked:</small>
+                                    <img src={bombBitcoin} style={{width: '32px'}}/>
+                                    <small>4563</small>
+                                </div>
+
+                                <Grid container spacing={2}>
+                                    <Grid item xs={2}>
+                                        <small>Daily Returns:</small>
+                                        <Typography>2%</Typography>
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <small>Daily Returns:</small>
+                                        <Typography>2%</Typography>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <small>Daily Returns:</small>
+                                        <Typography>2%</Typography>
+                                    </Grid>
+                                    <Grid item xs={5}>
+                                        <Grid container spacing={1}>
+                                            <Grid item xs={6}>
+                                                <OutlineButton icon={upIcon} title={"Deposit"}/>
+
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <OutlineButton icon={downIcon} title={"Withdraw"}/>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <OutlineButton icon={bombIcon} title={"Claim Rewards"}/>
+                                            </Grid>
+                                        </Grid>
+
+
+                                    </Grid>
+                                </Grid>
                             </CardContainer>
                             {/*Boardroom */}
                         </Grid>
@@ -157,7 +265,10 @@ const Dashboard = () => {
                         {/*Latest News*/}
                         <Grid item xs={5}>
                             <CardContainer>
-                                <Typography>Latest News</Typography>
+                                <div style={{height: '274px'}}>
+                                    <Typography>Latest News</Typography>
+                                </div>
+
                             </CardContainer>
                         </Grid>
                         {/*Latest News*/}
@@ -268,11 +379,22 @@ const StyledWrapper = styled.div`
 `;
 
 const StyledThinLine = styled.div`
-
   height: 0.5px;
   width: 100%;
   background: rgba(195, 197, 203, 0.75);
-
+`
+const StyledCustomBtn = styled.div`
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #728CDF;
+`
+const Tag = styled.div`
+  padding: 2px 5px;
+  background: rgba(0, 232, 162, 0.5);
+  border-radius: 3px;
 `
 
 export default Dashboard;
