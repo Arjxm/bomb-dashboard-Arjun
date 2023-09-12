@@ -6,7 +6,7 @@ You can start by reading our [Contribution guidelines](CONTRIBUTING.md) first.
 ## Setup
 
 Install the dependencies
-
+ss
 ```shell
 yarn
 yarn start
